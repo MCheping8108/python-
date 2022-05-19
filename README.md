@@ -1,78 +1,52 @@
-# python-
-我的python代码作品，免费开源，你值得拥有
-import requests
-from requests import RequestException
-from lxml import etree
-from contextlib import closing
-from pyquery import PyQuery as pq
-import re
-import os
-import json
-import subprocess
-import easygui
-import time
+# 在GitHub自我介绍
 
-head = {    #自身伪造微软edge浏览器身份头向对方发送消息
-        "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edg/99.0.1150.46'
-    }
-#信息展示框
-eula = easygui.ccbox(msg="注意！本程序为学习原理使用！如果销售！你自己承担！制作软件作者概不负责！！！",title="使用协议",choices=("同意","拒绝"))
-if eula == 1:
-    
-    #baseurl是视频的来源链接，如果想要下载其他视频请把视频链接复制到baseurl
-    box = easygui.enterbox('请输入你要下载视频的链接')
-    baseurl = (box)
-    #获取视频地址响应状态码
-    html = requests.get(url = baseurl, headers = head).text
-    doc = pq(html)
-    title = doc('#viewbox_report > h1 > span').text()#获取视频标题
-    pattern = r'\<script\>window\.__playinfo__=(.*?)\</script\>'
+大家好！我是和平
+虽然但是，我是一个游戏小主播
+但是！我还是一个爱编程的小伙子！
+我喜欢探究各种各样编程语言
+比如：Python、HTML、CSS等
+
+正在学HTML和CSS
+
+这是我第一次写的markdown（~~不会用markdown的我是屑~~）
+
+# 这是我做的能爬取B站视频的python小程序
+我自己做了一个能爬取B站的视频python程序（~~其实是抄的~~）
+
+但是我做了一个小改变，这个原来的程序是没有提醒“只供学习，禁止商用”的字样，我把它给添加上去了（当时我没有截图）
+
+说一下原理
+## 原理
+	head = {    #自身伪造微软edge浏览器身份头向对方发送消息
+	        "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edg/99.0.1150.46'
+	    }
+这个代码伪装自己是浏览器（如：Google Chrome, Microsoft Edge等）
+简单来说就是**诈骗**（让我想起了那段**诈骗视频（Never gonna give you up）**）
+
+就是简单的原理（~~爱整活的和平~~）
+
+	box = easygui.enterbox('请输入你要下载视频的链接')
+	baseurl = (box)
+这段代码是我导入了一个模块，叫**easygui**
+
+**注：这个模块是需要自己导入，如果没有这个模块，那么这个程序就是个摆设**
+
+然后这个baseurl是给这段代码起个名字，可以随意更改，但是后面的代码需要对应
+
+	title = doc('#viewbox_report > h1 > span').text()#获取视频标题
+	pattern = r'\<script\>window\.__playinfo__=(.*?)\</script\>'
     result = re.findall(pattern, html)[0]
     temp = json.loads(result)
     #title为显示视频标题
     print(("开始下载--->")+title)
     print('下载速度是根据你家的网速有关')
     print('显示“视频下载完成”前请不要关闭程序')
-    #导入urllib3模块
-    import urllib3
-    urllib3.disable_warnings()
+这段代码是对应的视频连接（我也不知道叫什么。。。）
 
-    headers = {#自身伪造Microsoft Edge浏览器
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edg/99.0.1150.46',
-            'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',#接收数据
-            'Accept-Encoding':'gzip, deflate, br',#接受编码
-            'Accept-Language':'zh-CN,zh;q=0.9,en;q=0.8'#接受语言
-        }
-    headers.update({'Referer': baseurl})
-    res = requests.Session()
-    begin = 0
-    end = 1024*1024 - 1
-    flag = 0
-    #在当前目录以.flv视频格式保存下来
-    filename = "./"+title+".flv"
-    url = temp["data"]["dash"]["video"][0]['baseUrl']
-    while True:
-        headers.update({'Range': 'bytes=' + str(begin) + '-' + str(end)})
-        res = requests.get(url=url, headers=headers,verify=False)
-        if res.status_code != 416:
-            begin = end + 1
-            end = end + 1024*1024
-        else:
-            headers.update({'Range': str(end + 1) + '-'})
-            res = requests.get(url=url, headers=headers,verify=False)
-            flag=1
-        with open(filename, 'ab') as fp:
-            fp.write(res.content)
-            fp.flush()
-        if flag==1:
-            fp.close()
-            break
+后面这三个print是打印，显示在控制台上
+（我根本不会做网速提示啊啊啊啊啊）
 
-    print('--------------------------------------------')
-    print('视频下载完成')
-    print('--------------------------------------------')
-    print('正在下载音频，请勿关闭程序')
-    #在当前目录以.mp3音频格式保存下来
+	#在当前目录以.mp3音频格式保存下来
     filename = "./"+title+".mp3"
     url = temp["data"]["dash"]["audio"][0]['baseUrl']
     while True:
@@ -91,9 +65,9 @@ if eula == 1:
         if flag==1:
             fp.close()
             break
+由于B站的视频把每个视频和音频都拆开了，所以我们还需要下载音频
+这个代码是下载音频（我也不会解释）
 
-    print('音频下载完成')
-    print('所有任务全部完成，现在可以放心大胆关闭了')
-#如果你没有同意使用协议，将会显示拒绝后的信息并停止运行程序
-else:
-    easygui.msgbox('你拒绝了用户协议，本程序已停止运行')
+# 总结
+这个程序可以爬取视频，我这个程序虽然免费开源，但是不要商用！我这个是免费开源，还有不允许盗取别人的视频！！！
+请理解
